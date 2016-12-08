@@ -1,0 +1,71 @@
+
+    public struct ScoreBoardText
+    {
+        public int score;
+        public string str;
+    }
+
+    public void SetScoreBoard()
+    {
+        //System.Threading.Thread.Sleep(5000);
+        string path = @"D:\Unity3D_M\test.txt";
+        string s;
+        string[] str = new string[1024];
+        int[] score_F = new int[1024];
+        ScoreBoardText[] sbText = new ScoreBoardText[20];
+        int index = 0;
+
+        GameOverText.text = "\nSCORE BOARD\n\n";
+
+        using(StreamWriter sw = File.AppendText(path))
+        {
+            sw.WriteLine("NO_NAME " + score);
+        }
+
+        using (StreamReader sr = File.OpenText(path))
+        {
+            while ((s = sr.ReadLine()) != null)
+            {
+                string[] sTmp = s.Split(' ');
+                str[index] = sTmp[0];
+                sbText[index].str = sTmp[0];
+                if (sTmp[1] != null)
+                {
+                    sbText[index].score = int.Parse(sTmp[1]);
+                    score_F[index++] = int.Parse(sTmp[1]);
+                }
+            }
+        }
+        System.Array.Sort(score_F);
+        System.Array.Reverse(score_F);
+        sbSorting(sbText,index);
+        for(int i = 0; i < index && i < 10; i++)
+        {
+            GameOverText.text += (i + 1) + ".\t"+ sbText[i].str+"\t" + sbText[i].score + "\n";
+        }
+        using (StreamWriter sw = File.CreateText(path))
+        {
+            for(int i = 0; i < 10; i++)
+                sw.WriteLine("NO_NAME " + score_F[i]);
+        }
+    }
+    public ScoreBoardText[] sbSorting(ScoreBoardText[] sbText, int size)
+    {
+        ScoreBoardText index = sbText[0];
+        int j = 0;
+
+        for(int i = 0; i < size; i++)
+        {
+            index = sbText[i];
+            j = i;
+
+            while ((j > 0) && (sbText[j - 1].score < index.score))
+            {
+                sbText[j] = sbText[j - 1];
+                j = j - 1;
+            }
+            sbText[j] = index;
+        }
+
+        return sbText;
+    }
